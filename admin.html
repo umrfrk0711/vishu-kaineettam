@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishu Admin — Live Results 🔥</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="petals-bg" id="petalsBg"></div>
+
+  <header class="admin-header">
+    <div class="lamp-row">🪔 🌸 🪔</div>
+    <h1>🔥 Live Scratch Results</h1>
+    <p>Real-time updates from Firebase Firestore</p>
+    <div class="live-badge">
+      <span class="live-dot"></span> LIVE
+    </div>
+    <p style="margin-top:1rem;color:#888;font-size:0.85rem">
+      Total scratches: <strong id="totalCount" style="color:#FFD700">0</strong>
+      &nbsp;|&nbsp; Total won: <strong id="totalWon" style="color:#FFD700">₹0</strong>
+    </p>
+    <button class="btn-clear" id="btnClear">🗑️ Clear All Results</button>
+  </header>
+
+  <!-- Confirm clear dialog -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal">
+      <div class="modal-emoji">🗑️</div>
+      <h2 style="color:#ff6b6b">Clear All Results?</h2>
+      <p>This will permanently delete all scratch records from Firebase.</p>
+      <div class="modal-actions">
+        <button class="btn-yes" id="btnConfirmClear" style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff">Yes, clear all</button>
+        <button class="btn-no"  id="btnCancelClear">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-grid" id="resultsGrid">
+    <div class="empty-state" id="emptyState">
+      🌸 No scratches yet. Be the first!
+    </div>
+  </div>
+
+  <script type="module">
+    import { listenScratchResults, clearAllResults } from "./firebase.js";
+
+    const grid          = document.getElementById("resultsGrid");
+    const emptyState    = document.getElementById("emptyState");
+    const totalCount    = document.getElementById("totalCount");
+    const totalWon      = document.getElementById("totalWon");
+    const btnClear      = document.getElementById("btnClear");
+    const confirmOverlay  = document.getElementById("confirmOverlay");
+    const btnConfirmClear = document.getElementById("btnConfirmClear");
+    const btnCancelClear  = document.getElementById("btnCancelClear");
+
+    btnClear.addEventListener("click", () => confirmOverlay.classList.add("active"));
+    btnCancelClear.addEventListener("click", () => confirmOverlay.classList.remove("active"));
+    btnConfirmClear.addEventListener("click", async () => {
+      btnConfirmClear.textContent = "Clearing…";
+      btnConfirmClear.disabled = true;
+      await clearAllResults();
+      confirmOverlay.classList.remove("active");
+      btnConfirmClear.textContent = "Yes, clear all";
+      btnConfirmClear.disabled = false;
+    });
+
+    // Real-time listener
+    listenScratchResults((results) => {
+      // Update stats
+      totalCount.textContent = results.length;
+      totalWon.textContent   = "₹" + results.reduce((s, r) => s + (r.amount || 0), 0);
+
+      // Clear grid (keep empty state node)
+      grid.innerHTML = "";
+
+      if (results.length === 0) {
+        grid.appendChild(emptyState);
+        return;
+      }
+
+      results.forEach((r) => {
+        const card = document.createElement("div");
+        card.className = "result-card";
+
+        const ts = r.timestamp?.toDate?.();
+        const timeStr = ts
+          ? ts.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })
+          : "Just now";
+
+        card.innerHTML = `
+          <div class="rc-amount">₹${r.amount}</div>
+          <div class="rc-name">👤 ${escHtml(r.userName || "Anonymous")}</div>
+          <div class="rc-time">🕐 ${timeStr}</div>
+        `;
+        grid.appendChild(card);
+      });
+    });
+
+    function escHtml(str) {
+      return str.replace(/[&<>"']/g, (c) =>
+        ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])
+      );
+    }
+  </script>
+</body>
+</html>

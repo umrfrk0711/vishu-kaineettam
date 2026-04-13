@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishu Scratch Cards 🌸</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Floating petals -->
+  <div class="petals-bg" id="petalsBg"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="lamp-row">🪔 🌸 🪔</div>
+    <h1>✨ Vishu Kaineetam ✨</h1>
+    <p>Scratch your card and claim your blessing!</p>
+  </header>
+
+  <!-- Name input -->
+  <section class="name-section">
+    <input type="text" id="userName" placeholder="Enter your name" maxlength="30" />
+    <button class="btn-start" id="btnStart">Start Scratching 🎉</button>
+  </section>
+
+  <!-- Scratch cards -->
+  <main class="cards-container" id="cardsContainer" style="display:none">
+
+    <!-- Card 1 -->
+    <div class="card-wrapper">
+      <span class="card-label">Card 1 🌼</span>
+      <div class="scratch-card" id="card-0">
+        <div class="prize-layer">
+          <div class="prize-icon">🪙</div>
+          <div class="prize-amount">₹100</div>
+          <div class="prize-text">Vishu Blessing</div>
+        </div>
+        <canvas class="scratch-canvas" id="canvas-0"></canvas>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card-wrapper">
+      <span class="card-label">Card 2 🌺</span>
+      <div class="scratch-card" id="card-1">
+        <div class="prize-layer">
+          <div class="prize-icon">💰</div>
+          <div class="prize-amount">₹200</div>
+          <div class="prize-text">Vishu Blessing</div>
+        </div>
+        <canvas class="scratch-canvas" id="canvas-1"></canvas>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card-wrapper">
+      <span class="card-label">Card 3 🌻</span>
+      <div class="scratch-card" id="card-2">
+        <div class="prize-layer">
+          <div class="prize-icon">🏆</div>
+          <div class="prize-amount">₹300</div>
+          <div class="prize-text">Vishu Blessing</div>
+        </div>
+        <canvas class="scratch-canvas" id="canvas-2"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Win modal (with Yes/No curiosity question) -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-emoji">🎉</div>
+      <h2>Congratulations!</h2>
+      <p>You won</p>
+      <div class="modal-amount" id="modalAmount">₹100</div>
+      <p style="margin-top:0.5rem;color:#aaa;font-size:0.85rem">Saved to Firebase ✅</p>
+      <p class="curiosity-question">Curious what the other cards had? 👀</p>
+      <div class="modal-actions">
+        <button class="btn-yes" id="btnYes">Yes, show me! 🔍</button>
+        <button class="btn-no"  id="btnNo">No thanks 🙅</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Curiosity reveal modal (no prize, just for fun) -->
+  <div class="modal-overlay" id="curiosityOverlay">
+    <div class="modal">
+      <div class="modal-emoji">🔍</div>
+      <h2>It was hiding…</h2>
+      <p>This card had</p>
+      <div class="modal-amount" id="curiosityAmount">₹200</div>
+      <p style="margin-top:0.5rem;color:#aaa;font-size:0.85rem">Just for curiosity — not saved 😄</p>
+      <button class="btn-close" id="btnCuriosityClose">Got it! 👍</button>
+    </div>
+  </div>
+
+  <!-- Music toggle -->
+  <button class="music-btn" id="musicBtn" title="Toggle music">🎵</button>
+
+  <!-- Background audio (add your own .mp3 to assets/audio/) -->
+  <audio id="bgMusic" loop>
+    <source src="assets/audio/vishu-music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Scratch sound -->
+  <audio id="scratchSound">
+    <source src="assets/audio/scratch.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
